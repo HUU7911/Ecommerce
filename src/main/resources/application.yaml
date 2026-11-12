@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: Ecommerce
+  mongodb:
+    uri: ${MOGO_URL}
+  datasource:
+    url: ${URL}
+    username: postgres
+    password: ${PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+    open-in-view: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /ecommerce
+
+jwt:
+  signerKey: ${SIGNER_KEY}
+  valid-duration: ${VALID_DURATION}
+  refreshable-duration: ${REFRESHABLE_DURATION}
