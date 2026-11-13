@@ -1,3 +1,4 @@
+
 package com.huumod.ecommerce.identity.entity;
 
 import com.huumod.ecommerce.identity.convert.EncryptConvertor;
@@ -12,7 +13,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_email", columnList = "email"),
+        @Index(name = "idx_users_username", columnList = "username")
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+        @UniqueConstraint(name = "uk_users_username", columnNames = "username")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
