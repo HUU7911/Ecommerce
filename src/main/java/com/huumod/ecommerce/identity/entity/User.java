@@ -1,4 +1,3 @@
-
 package com.huumod.ecommerce.identity.entity;
 
 import com.huumod.ecommerce.identity.convert.EncryptConvertor;
