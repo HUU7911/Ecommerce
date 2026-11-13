@@ -26,5 +26,7 @@ public class ProfileCreationRequest {
 
     String email;
 
+    String avatar;
+
     LocalDate birthDate;
 }

@@ -39,5 +39,8 @@ public class Profile {
     @Convert(converter = EncryptConvertor.class)
     String email;
 
+    @Convert(converter = EncryptConvertor.class)
+    String avatar;
+
     LocalDate birthDate;
 }

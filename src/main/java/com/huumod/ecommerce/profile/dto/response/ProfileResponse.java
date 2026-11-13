@@ -26,5 +26,7 @@ public class ProfileResponse {
 
     String email;
 
+    String avatar;
+
     LocalDate birthDate;
 }
