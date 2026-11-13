@@ -6,6 +6,8 @@ import com.huumod.ecommerce.identity.entity.User;
 import com.huumod.ecommerce.identity.repository.PermissionRepository;
 import com.huumod.ecommerce.identity.repository.RoleRepository;
 import com.huumod.ecommerce.identity.repository.UserRepository;
+import com.huumod.ecommerce.profile.dto.request.ProfileCreationRequest;
+import com.huumod.ecommerce.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +33,7 @@ public class ApplicationConfigInit {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProfileService profileService;
 
     @Bean
     public ApplicationRunner applicationRunner(RoleRepository roleRepository, PermissionRepository permissionRepository) {
@@ -59,7 +61,16 @@ public class ApplicationConfigInit {
                         .birthDate(LocalDate.of(2006, 4, 5))
                         .roles(roles)
                         .build();
-                userRepository.save(user);
+                user = userRepository.save(user);
+
+                profileService.createProfile(ProfileCreationRequest.builder()
+                        .userId(user.getId())
+                        .username(user.getUsername())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .email(user.getEmail())
+                        .birthDate(user.getBirthDate())
+                        .build());
                 log.info("user has been saved");
             }
             log.info("user has been created");

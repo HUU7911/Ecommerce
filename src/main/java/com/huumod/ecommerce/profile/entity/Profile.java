@@ -1,6 +1,6 @@
-
 package com.huumod.ecommerce.profile.entity;
 
+import com.huumod.ecommerce.profile.convert.EncryptConvertor;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,14 +24,19 @@ public class Profile {
 
     String userId;
 
+    @Convert(converter = EncryptConvertor.class)
     String username;
 
+    @Convert(converter = EncryptConvertor.class)
     String firstName;
 
+    @Convert(converter = EncryptConvertor.class)
     String lastName;
 
+    @Convert(converter = EncryptConvertor.class)
     String phoneNumber;
 
+    @Convert(converter = EncryptConvertor.class)
     String email;
 
     LocalDate birthDate;

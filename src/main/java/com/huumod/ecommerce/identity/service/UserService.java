@@ -11,6 +11,8 @@ import com.huumod.ecommerce.identity.entity.User;
 import com.huumod.ecommerce.identity.mapper.UserMapper;
 import com.huumod.ecommerce.identity.repository.RoleRepository;
 import com.huumod.ecommerce.identity.repository.UserRepository;
+import com.huumod.ecommerce.profile.dto.request.ProfileCreationRequest;
+import com.huumod.ecommerce.profile.service.ProfileService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ import java.util.Set;
 public class UserService {
 
     UserMapper userMapper;
+    ProfileService profileService;
     UserRepository userRepository;
     RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
@@ -49,6 +52,16 @@ public class UserService {
         user.setRoles(roles);
 
         user = userRepository.save(user);
+
+        profileService.createProfile(ProfileCreationRequest.builder()
+                        .userId(user.getId())
+                        .username(user.getUsername())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .email(user.getEmail())
+                        .birthDate(user.getBirthDate())
+                .build());
+
         return userMapper.toUserResponse(user);
     }
 
@@ -66,6 +79,16 @@ public class UserService {
         user.setRoles(roles);
 
         user = userRepository.save(user);
+
+        profileService.createProfile(ProfileCreationRequest.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .birthDate(user.getBirthDate())
+                .build());
+
         return userMapper.toUserResponse(user);
     }
 
@@ -100,5 +123,6 @@ public class UserService {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteUserById(String id) {
         userRepository.deleteById(id);
+        profileService.deleteProfile(id);
     }
 }

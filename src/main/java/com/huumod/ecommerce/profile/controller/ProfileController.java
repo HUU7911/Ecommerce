@@ -41,9 +41,9 @@ public class ProfileController {
                 .build();
     }
 
-    @DeleteMapping("/delete")
-    ApiResponse<Void> deleteProfile() {
-        profileService.deleteProfile();
+    @DeleteMapping("/delete/{userId}")
+    ApiResponse<Void> deleteProfile(@PathVariable("userId") String userId) {
+        profileService.deleteProfile(userId);
         return ApiResponse.<Void>builder()
                 .message("profile has been deleted")
                 .build();

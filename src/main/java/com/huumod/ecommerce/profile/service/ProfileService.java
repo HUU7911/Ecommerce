@@ -52,8 +52,7 @@ public class ProfileService {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteProfile() {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+    public void deleteProfile(String userId) {
         profileRepository.deleteByUserId(userId);
     }
 }
