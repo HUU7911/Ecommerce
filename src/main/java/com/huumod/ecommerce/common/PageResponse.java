@@ -18,5 +18,7 @@ public class PageResponse<T> {
     int pageSize;
     int totalPages;
     int totalElements;
+
+    @Builder.Default
     List<T> list = new ArrayList<>();
 }
