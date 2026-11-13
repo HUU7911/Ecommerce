@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,6 +39,13 @@ public class ProfileController {
     ApiResponse<ProfileResponse> getMyProfile() {
         return ApiResponse.<ProfileResponse>builder()
                 .results(profileService.getMyProfile())
+                .build();
+    }
+
+    @PostMapping("/upload/avatar")
+    ApiResponse<ProfileResponse> uploadAvatar(@RequestPart("file")MultipartFile file) throws Exception {
+        return ApiResponse.<ProfileResponse>builder()
+                .results(profileService.uploadAvatar(file))
                 .build();
     }
 

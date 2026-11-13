@@ -17,6 +17,10 @@ spring:
   # Mongo db
   mongodb:
     uri: ${MOGO_URL}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 25MB
   # Postgres
   datasource:
     url: ${URL}
@@ -45,3 +49,14 @@ jwt:
 brevo:
   url: ${BREVO_URL}
   api-key: ${API_KEY_BREVO}
+
+app:
+  file:
+    download-prefix: "http://localhost:8888/api/v1/file/media/download/"
+
+minio:
+  config:
+    endpoint: ${ENDPOINT}
+    accessKey: ${ACCESS_KEY}
+    secretKey: ${SECRET_KEY}
+    bucket: ${BUCKET}
