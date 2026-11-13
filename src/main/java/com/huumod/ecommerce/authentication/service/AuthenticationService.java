@@ -58,9 +58,7 @@ public class AuthenticationService {
                 ? userRepository.findByEmail(request.getName()).orElse(null)
                 : userRepository.findByUsername(request.getName()).orElse(null);
 
-        assert user != null;
-        var authenticated = passwordEncoder
-                .matches(request.getPassword(), user.getPassword());
+        var authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if  (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -179,12 +177,15 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
+        if (invalidateTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+
         return signedJWT;
     }
 
      private String buildScope(User user) {
          StringJoiner stringJoiner = new StringJoiner(", ");
-         if (CollectionUtils.isEmpty(user.getRoles())) {
+         if (!CollectionUtils.isEmpty(user.getRoles())) {
              user.getRoles().forEach(role -> {
                  stringJoiner.add("ROLE_" + role.getName());
                  if (CollectionUtils.isEmpty(role.getPermissions())) {
