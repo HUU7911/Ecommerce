@@ -26,3 +26,7 @@ jwt:
   signerKey: ${SIGNER_KEY}
   valid-duration: ${VALID_DURATION}
   refreshable-duration: ${REFRESHABLE_DURATION}
+
+brevo:
+  url: ${BREVO_URL}
+  api-key: ${API_KEY_BREVO}

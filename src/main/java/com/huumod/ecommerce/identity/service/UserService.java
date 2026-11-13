@@ -1,5 +1,6 @@
 package com.huumod.ecommerce.identity.service;
 
+import com.huumod.ecommerce.common.event.NotificationEvent;
 import com.huumod.ecommerce.common.exception.AppException;
 import com.huumod.ecommerce.common.exception.ErrorCode;
 import com.huumod.ecommerce.identity.constant.RoleDefine;
@@ -17,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,7 @@ public class UserService {
     UserRepository userRepository;
     RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
+    KafkaTemplate<String, NotificationEvent> kafkaTemplate;
 
     @Transactional
     public UserResponse createUser(UserCreationRequest request) {
@@ -61,6 +64,19 @@ public class UserService {
                         .email(user.getEmail())
                         .birthDate(user.getBirthDate())
                 .build());
+
+        NotificationEvent event = NotificationEvent.builder()
+                .chanel("EMAIL")
+                .subject("created users")
+                .body("Welcome to onetech phone" + user.getEmail())
+                .recipient(user.getEmail())
+                .build();
+
+        try {
+            kafkaTemplate.send("user-created", event);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.EMAIL_NOT_SEND);
+        }
 
         return userMapper.toUserResponse(user);
     }
@@ -88,6 +104,19 @@ public class UserService {
                 .email(user.getEmail())
                 .birthDate(user.getBirthDate())
                 .build());
+
+        NotificationEvent event = NotificationEvent.builder()
+                .chanel("EMAIL")
+                .subject("created users")
+                .body("Welcome to onetech phone" + user.getEmail())
+                .recipient(user.getEmail())
+                .build();
+
+        try {
+            kafkaTemplate.send("user-created", event);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.EMAIL_NOT_SEND);
+        }
 
         return userMapper.toUserResponse(user);
     }

@@ -18,7 +18,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(1004, "user not found", HttpStatus.NOT_FOUND),
     INVALID_KEY(1005, "invalid key", HttpStatus.BAD_REQUEST),
     PROFILE_EXISTED(1006, "profile existed", HttpStatus.CONFLICT),
-    PROFILE_NOT_FOUND(1007, "profile not found", HttpStatus.NOT_FOUND)
+    PROFILE_NOT_FOUND(1007, "profile not found", HttpStatus.NOT_FOUND),
+    EMAIL_NOT_SEND(1008, "email not send", HttpStatus.BAD_REQUEST)
     ;
 
     private int code;
