@@ -26,17 +26,16 @@ services:
     ports:
       - "9200:9200"
 
-  mysql:
-    image: mysql:latest
-    container_name: shop-mysql
+  postgres:
+    image: postgres:latest
+    container_name: shop-postgres
     environment:
-      MYSQL_DATABASE: identity_db
-      MYSQL_ROOT_USERNAME: root
-      MYSQL_ROOT_PASSWORD: 123456
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
 
   mongodb:
     image: mongo:latest
@@ -76,3 +75,4 @@ volumes:
   mongodb_data:
   redis_data:
   minio_data:
+  postgres_data:
