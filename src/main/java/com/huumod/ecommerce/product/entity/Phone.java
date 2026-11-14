@@ -22,16 +22,24 @@ public class Phone {
     String id;
 
     String name;
-
     String description;
 
+    @ElementCollection
+    @CollectionTable(name = "phone_options", joinColumns = @JoinColumn(name = "phone_id"))
     List<PhoneOption> options;
 
+    @ElementCollection
+    @CollectionTable(name = "phone_images", joinColumns = @JoinColumn(name = "phone_id"))
+    @Column(name = "image_url")
     List<String> images;
 
     @OneToOne(fetch = FetchType.EAGER)
-    Set<PhoneDetail> detail;
+    @JoinColumn(name = "detail_id")
+    PhoneDetail detail;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "phone_categories",
+            joinColumns = @JoinColumn(name = "phone_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> categories;
 }

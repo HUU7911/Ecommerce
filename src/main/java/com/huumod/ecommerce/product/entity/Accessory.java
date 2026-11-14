@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,10 +25,20 @@ public class Accessory {
 
     String description;
 
-    List<AccessoryOption> accessoryOptions;
+    @ElementCollection
+    @CollectionTable(name = "accessory_options",
+            joinColumns = @JoinColumn(name = "accessory_id"))
+    List<AccessoryOption> accessoryOptions = new ArrayList<>();
 
-    List<String> images;
+    @ElementCollection
+    @CollectionTable(name = "accessory_images",
+            joinColumns = @JoinColumn(name = "accessory_id"))
+    @Column(name = "image_url")
+    List<String> images = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "accessory_category",
+            joinColumns = @JoinColumn(name = "accessory_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> categories;
 }

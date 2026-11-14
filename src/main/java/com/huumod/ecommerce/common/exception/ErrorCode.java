@@ -20,7 +20,11 @@ public enum ErrorCode {
     PROFILE_EXISTED(1006, "profile existed", HttpStatus.CONFLICT),
     PROFILE_NOT_FOUND(1007, "profile not found", HttpStatus.NOT_FOUND),
     EMAIL_NOT_SEND(1008, "email not send", HttpStatus.BAD_REQUEST),
-    FILE_NOT_FOUND(1009, "file not found", HttpStatus.NOT_FOUND)
+    FILE_NOT_FOUND(1009, "file not found", HttpStatus.NOT_FOUND),
+    ACCESSORY_EXISTED(1010, "accessory existed", HttpStatus.CREATED),
+    ACCESSORY_NOT_FOUND(1011, "accessory not found", HttpStatus.NOT_FOUND),
+    PHONE_EXISTED(1012, "phone existed", HttpStatus.CREATED),
+    PHONE_NOT_FOUND(1013, "phone not found", HttpStatus.NOT_FOUND)
     ;
 
     private int code;
