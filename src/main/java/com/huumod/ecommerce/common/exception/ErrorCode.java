@@ -24,7 +24,11 @@ public enum ErrorCode {
     ACCESSORY_EXISTED(1010, "accessory existed", HttpStatus.CREATED),
     ACCESSORY_NOT_FOUND(1011, "accessory not found", HttpStatus.NOT_FOUND),
     PHONE_EXISTED(1012, "phone existed", HttpStatus.CREATED),
-    PHONE_NOT_FOUND(1013, "phone not found", HttpStatus.NOT_FOUND)
+    PHONE_NOT_FOUND(1013, "phone not found", HttpStatus.NOT_FOUND),
+    INVENTORY_EXSITED(1014, "inventory existed", HttpStatus.CONFLICT),
+    INVENTORY_NOT_FOUND(1015, "inventory not found", HttpStatus.NOT_FOUND),
+    INVENTORY_MAX_SIZE(1016, "inventory max size", HttpStatus.BAD_REQUEST),
+    PRODUCT_OUT_STOCK(1017, "product out stock", HttpStatus.BAD_REQUEST)
     ;
 
     private int code;
