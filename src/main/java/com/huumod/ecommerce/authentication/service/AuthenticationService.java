@@ -98,18 +98,21 @@ public class AuthenticationService {
                 .build();
     }
 
-    public void logout(JwtRequest request) throws AppException, ParseException {
+    public void logout(JwtRequest request) {
         try {
-            var sigJwt = verifyToken(request.getToken(), true);
+            SignedJWT signedJWT = verifyToken(request.getToken(), true);
 
-            String jti = sigJwt.getJWTClaimsSet().getJWTID();
-            Date expiryTime = sigJwt.getJWTClaimsSet().getExpirationTime();
+            String jti = signedJWT.getJWTClaimsSet().getJWTID();
+            Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
             InvalidateToken invalidateToken = InvalidateToken.builder()
                     .id(jti)
                     .expiryTime(expiryTime)
                     .build();
+
             invalidateTokenRepository.save(invalidateToken);
+        } catch (AppException | ParseException e) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
@@ -157,18 +160,18 @@ public class AuthenticationService {
         }
     }
 
-    public SignedJWT verifyToken(String token, boolean invalidate) throws JOSEException, ParseException {
+    public SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(jwtSignerKey.getBytes());
 
         SignedJWT signedJWT = SignedJWT.parse(token);
 
-        Date expiryTime = (invalidate)
+        Date expiryTime = (isRefresh)
                 ? new Date(signedJWT
-                    .getJWTClaimsSet()
-                    .getIssueTime()
-                    .toInstant()
-                    .plus(jwtRefreshableDuration, ChronoUnit.SECONDS)
-                    .toEpochMilli())
+                .getJWTClaimsSet()
+                .getIssueTime()
+                .toInstant()
+                .plus(jwtRefreshableDuration, ChronoUnit.SECONDS)
+                .toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(verifier);
