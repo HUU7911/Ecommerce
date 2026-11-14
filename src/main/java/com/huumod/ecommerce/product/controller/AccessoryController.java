@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/accessory")
@@ -20,9 +21,10 @@ public class AccessoryController {
     AccessoryService accessoryService;
 
     @PostMapping("/create")
-    ApiResponse<AccessoryResponse> createAccessory(@RequestBody AccessoryRequest request) {
+    ApiResponse<AccessoryResponse> createAccessory(@RequestPart AccessoryRequest request, @RequestPart MultipartFile file)
+            throws Exception {
         return ApiResponse.<AccessoryResponse>builder()
-                .results(accessoryService.createAccessory(request))
+                .results(accessoryService.createAccessory(request, file))
                 .build();
     }
 
@@ -37,9 +39,10 @@ public class AccessoryController {
     }
 
     @PutMapping("/update/{id}")
-    ApiResponse<AccessoryResponse> updateAccessory(@PathVariable("id") String id, @RequestBody AccessoryUpdateRequest request) {
+    ApiResponse<AccessoryResponse> updateAccessory(@PathVariable("id") String id, @RequestPart AccessoryUpdateRequest request, @RequestPart MultipartFile file)
+            throws Exception {
         return ApiResponse.<AccessoryResponse>builder()
-                .results(accessoryService.updateCategory(id, request))
+                .results(accessoryService.updateAccessory(id, request, file))
                 .build();
     }
 

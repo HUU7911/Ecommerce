@@ -3,6 +3,7 @@ package com.huumod.ecommerce.product.service;
 import com.huumod.ecommerce.common.PageResponse;
 import com.huumod.ecommerce.common.exception.AppException;
 import com.huumod.ecommerce.common.exception.ErrorCode;
+import com.huumod.ecommerce.file.service.FileService;
 import com.huumod.ecommerce.product.dto.request.AccessoryRequest;
 import com.huumod.ecommerce.product.dto.request.AccessoryUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.AccessoryResponse;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +32,10 @@ public class AccessoryService {
     AccessoryMapper accessoryMapper;
     AccessoryRepository accessoryRepository;
     CategoryRepository categoryRepository;
+    FileService fileService;
 
-    public AccessoryResponse createAccessory(AccessoryRequest request) {
+    public AccessoryResponse createAccessory(AccessoryRequest request, MultipartFile file)
+            throws Exception {
         if (accessoryRepository.existsByName(request.getName()))
             throw new AppException(ErrorCode.ACCESSORY_EXISTED);
 
@@ -40,12 +44,15 @@ public class AccessoryService {
                 categoryRepository.findAllById(request.getCategories()));
         accessory.setCategories(categories);
 
+        var images = fileService.uploadFile(file);
+        accessory.setImages(List.of(images.getUrl()));
+
         accessory = accessoryRepository.save(accessory);
 
         return accessoryMapper.toAccessoryResponse(accessory);
     }
 
-    public AccessoryResponse updateCategory(String id, AccessoryUpdateRequest request) {
+    public AccessoryResponse updateAccessory(String id, AccessoryUpdateRequest request, MultipartFile file) throws Exception {
         var accessory = accessoryRepository.findById(id).orElseThrow(
                 () -> new AppException(ErrorCode.ACCESSORY_NOT_FOUND)
         );
@@ -54,6 +61,10 @@ public class AccessoryService {
         Set<Category> categories = new HashSet<>(
                 categoryRepository.findAllById(request.getCategories()));
         accessory.setCategories(categories);
+
+        var images = fileService.uploadFile(file);
+        accessory.setImages(List.of(images.getUrl()));
+
         accessory = accessoryRepository.save(accessory);
 
         return accessoryMapper.toAccessoryResponse(accessory);

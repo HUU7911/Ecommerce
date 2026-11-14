@@ -3,11 +3,11 @@ package com.huumod.ecommerce.product.service;
 import com.huumod.ecommerce.common.PageResponse;
 import com.huumod.ecommerce.common.exception.AppException;
 import com.huumod.ecommerce.common.exception.ErrorCode;
+import com.huumod.ecommerce.file.service.FileService;
 import com.huumod.ecommerce.product.dto.request.PhoneRequest;
 import com.huumod.ecommerce.product.dto.request.PhoneUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.PhoneResponse;
 import com.huumod.ecommerce.product.entity.Category;
-import com.huumod.ecommerce.product.entity.PhoneDetail;
 import com.huumod.ecommerce.product.mapper.PhoneMapper;
 import com.huumod.ecommerce.product.repository.CategoryRepository;
 import com.huumod.ecommerce.product.repository.PhoneDetailRepository;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,8 +34,10 @@ public class PhoneService {
     PhoneRepository phoneRepository;
     PhoneDetailRepository phoneDetailRepository;
     CategoryRepository categoryRepository;
+    FileService fileService;
 
-    public PhoneResponse createPhone(PhoneRequest request) {
+    public PhoneResponse createPhone(PhoneRequest request, MultipartFile file)
+            throws Exception {
         if (phoneRepository.existsByName(request.getName()))
             throw new AppException(ErrorCode.PHONE_EXISTED);
 
@@ -48,12 +51,16 @@ public class PhoneService {
                 categoryRepository.findAllById(request.getCategories()));
         phone.setCategories(categories);
 
+        var images = fileService.uploadFile(file);
+        phone.setImages(List.of(images.getUrl()));
+
         phone = phoneRepository.save(phone);
 
         return phoneMapper.toPhoneResponse(phone);
     }
 
-    public PhoneResponse updatePhone(String id, PhoneUpdateRequest request) {
+    public PhoneResponse updatePhone(String id, PhoneUpdateRequest request, MultipartFile file)
+            throws Exception {
         var phone = phoneRepository.findById(id).orElseThrow(
                 () -> new AppException(ErrorCode.PHONE_NOT_FOUND)
         );
@@ -66,6 +73,9 @@ public class PhoneService {
         Set<Category> categories = new HashSet<>(
                 categoryRepository.findAllById(request.getCategories()));
         phone.setCategories(categories);
+        var images = fileService.uploadFile(file);
+        phone.setImages(List.of(images.getUrl()));
+
         phone = phoneRepository.save(phone);
 
         return phoneMapper.toPhoneResponse(phone);

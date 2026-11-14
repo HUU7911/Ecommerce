@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/phone")
@@ -20,9 +21,10 @@ public class PhoneController {
     PhoneService phoneService;
 
     @PostMapping("/create")
-    ApiResponse<PhoneResponse> createPhone(@RequestBody PhoneRequest request) {
+    ApiResponse<PhoneResponse> createPhone(@RequestPart PhoneRequest request, @RequestPart MultipartFile file)
+            throws Exception {
         return ApiResponse.<PhoneResponse>builder()
-                .results(phoneService.createPhone(request))
+                .results(phoneService.createPhone(request, file))
                 .build();
     }
 
@@ -37,9 +39,10 @@ public class PhoneController {
     }
 
     @PutMapping("/update/{id}")
-    ApiResponse<PhoneResponse> updatePhone(@PathVariable("id") String id, @RequestBody PhoneUpdateRequest request) {
+    ApiResponse<PhoneResponse> updatePhone(@PathVariable("id") String id, @RequestPart PhoneUpdateRequest request, @RequestPart MultipartFile file)
+            throws Exception {
         return ApiResponse.<PhoneResponse>builder()
-                .results(phoneService.updatePhone(id, request))
+                .results(phoneService.updatePhone(id, request, file))
                 .build();
     }
 
