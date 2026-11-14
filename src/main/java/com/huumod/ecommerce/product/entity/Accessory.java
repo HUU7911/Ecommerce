@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -41,4 +42,6 @@ public class Accessory {
             joinColumns = @JoinColumn(name = "accessory_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> categories;
+
+    LocalDate createdAt;
 }

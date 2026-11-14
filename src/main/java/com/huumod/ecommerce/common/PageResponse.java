@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -17,8 +17,8 @@ public class PageResponse<T> {
     int currentPage;
     int pageSize;
     int totalPages;
-    int totalElements;
+    long totalElements;
 
     @Builder.Default
-    List<T> list = new ArrayList<>();
+    List<T> data = Collections.emptyList();
 }

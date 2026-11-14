@@ -1,6 +1,7 @@
 package com.huumod.ecommerce.product.controller;
 
 import com.huumod.ecommerce.common.ApiResponse;
+import com.huumod.ecommerce.common.PageResponse;
 import com.huumod.ecommerce.product.dto.request.PhoneRequest;
 import com.huumod.ecommerce.product.dto.request.PhoneUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.PhoneResponse;
@@ -9,8 +10,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/phone")
@@ -28,9 +27,12 @@ public class PhoneController {
     }
 
     @GetMapping
-    ApiResponse<List<PhoneResponse>> getAll() {
-        return ApiResponse.<List<PhoneResponse>>builder()
-                .results(phoneService.getAll())
+    ApiResponse<PageResponse<PhoneResponse>> getAll(
+            @RequestParam(value = "page", required = false, defaultValue = "8") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "8") int size
+    ) {
+        return ApiResponse.<PageResponse<PhoneResponse>>builder()
+                .results(phoneService.getAll(page, size))
                 .build();
     }
 

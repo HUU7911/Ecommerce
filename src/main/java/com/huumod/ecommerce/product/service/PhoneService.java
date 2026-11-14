@@ -1,5 +1,6 @@
 package com.huumod.ecommerce.product.service;
 
+import com.huumod.ecommerce.common.PageResponse;
 import com.huumod.ecommerce.common.exception.AppException;
 import com.huumod.ecommerce.common.exception.ErrorCode;
 import com.huumod.ecommerce.product.dto.request.PhoneRequest;
@@ -14,6 +15,9 @@ import com.huumod.ecommerce.product.repository.PhoneRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -67,10 +71,22 @@ public class PhoneService {
         return phoneMapper.toPhoneResponse(phone);
     }
 
-    public List<PhoneResponse> getAll() {
-        return phoneRepository.findAll().stream()
-                .map(phoneMapper::toPhoneResponse)
-                .toList();
+    public PageResponse<PhoneResponse> getAll(int page, int size) {
+
+        Sort sort = Sort.by("createdAt").ascending();
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+        var pageData = phoneRepository.findAll(pageable);
+
+        return PageResponse.<PhoneResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(pageData.stream()
+                        .map(phoneMapper::toPhoneResponse)
+                        .toList()
+                )
+                .build();
     }
 
     public void deletePhone(String id) {

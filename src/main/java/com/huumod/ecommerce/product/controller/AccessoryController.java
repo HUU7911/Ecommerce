@@ -1,6 +1,7 @@
 package com.huumod.ecommerce.product.controller;
 
 import com.huumod.ecommerce.common.ApiResponse;
+import com.huumod.ecommerce.common.PageResponse;
 import com.huumod.ecommerce.product.dto.request.AccessoryRequest;
 import com.huumod.ecommerce.product.dto.request.AccessoryUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.AccessoryResponse;
@@ -9,8 +10,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/accessory")
@@ -28,9 +27,12 @@ public class AccessoryController {
     }
 
     @GetMapping
-    ApiResponse<List<AccessoryResponse>> getAll() {
-        return ApiResponse.<List<AccessoryResponse>>builder()
-                .results(accessoryService.getAll())
+    ApiResponse<PageResponse<AccessoryResponse>> getAll(
+            @RequestParam(value = "page", required = false, defaultValue = "8") int page,
+            @RequestParam(value = "page", required = false, defaultValue = "8") int size
+    ) {
+        return ApiResponse.<PageResponse<AccessoryResponse>>builder()
+                .results(accessoryService.getAll(page, size))
                 .build();
     }
 

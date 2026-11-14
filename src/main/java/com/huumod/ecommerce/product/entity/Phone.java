@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -42,4 +43,6 @@ public class Phone {
             joinColumns = @JoinColumn(name = "phone_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     Set<Category> categories;
+
+    LocalDate createdAt;
 }

@@ -1,5 +1,6 @@
 package com.huumod.ecommerce.product.service;
 
+import com.huumod.ecommerce.common.PageResponse;
 import com.huumod.ecommerce.common.exception.AppException;
 import com.huumod.ecommerce.common.exception.ErrorCode;
 import com.huumod.ecommerce.product.dto.request.AccessoryRequest;
@@ -12,6 +13,9 @@ import com.huumod.ecommerce.product.repository.CategoryRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -55,10 +59,22 @@ public class AccessoryService {
         return accessoryMapper.toAccessoryResponse(accessory);
     }
 
-    public List<AccessoryResponse> getAll() {
-        return accessoryRepository.findAll().stream()
-                .map(accessoryMapper::toAccessoryResponse)
-                .toList();
+    public PageResponse<AccessoryResponse> getAll(int page, int size) {
+
+        Sort sort = Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+        var pageData = accessoryRepository.findAll(pageable);
+
+        return PageResponse.<AccessoryResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(pageData.stream()
+                        .map(accessoryMapper::toAccessoryResponse)
+                        .toList()
+                )
+                .build();
     }
 
     public void deleteAccessory(String id) {
