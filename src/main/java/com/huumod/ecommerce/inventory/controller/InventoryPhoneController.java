@@ -20,13 +20,14 @@ public class InventoryPhoneController {
 
     InventoryPhoneService inventoryPhoneService;
 
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<InventoryPhoneResponse> createInventory(
+            @PathVariable("optionId") String optionId,
             @RequestBody @Valid InventoryPhoneRequest request) {
         return ApiResponse.<InventoryPhoneResponse>builder()
                 .message("Inventory created successfully")
-                .results(inventoryPhoneService.createInventory(request))
+                .results(inventoryPhoneService.createInventory(optionId, request))
                 .build();
     }
 
@@ -40,19 +41,19 @@ public class InventoryPhoneController {
                 .build();
     }
 
-    @PatchMapping("/{id}/increase")
-    public ApiResponse<InventoryPhoneResponse> increaseQuantity(@PathVariable String id) {
+    @PatchMapping("/products/{productId}/increase")
+    public ApiResponse<InventoryPhoneResponse> increaseQuantity(@PathVariable String productId) {
         return ApiResponse.<InventoryPhoneResponse>builder()
                 .message("Increase quantity successfully")
-                .results(inventoryPhoneService.increaseQuantity(id))
+                .results(inventoryPhoneService.increaseQuantity(productId))
                 .build();
     }
 
-    @PatchMapping("/{id}/reduce")
-    public ApiResponse<InventoryPhoneResponse> reduceQuantity(@PathVariable String id) {
+    @PatchMapping("/products/{productId}/reduce")
+    public ApiResponse<InventoryPhoneResponse> reduceQuantity(@PathVariable String productId) {
         return ApiResponse.<InventoryPhoneResponse>builder()
                 .message("Reduce quantity successfully")
-                .results(inventoryPhoneService.reduceQuantity(id))
+                .results(inventoryPhoneService.reduceQuantity(productId))
                 .build();
     }
 

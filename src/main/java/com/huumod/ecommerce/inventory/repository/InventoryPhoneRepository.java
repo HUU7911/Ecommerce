@@ -7,17 +7,22 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface InventoryPhoneRepository extends JpaRepository<InventoryPhone, String> {
+
     boolean existsByProductId(String productId);
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE InventoryPhone i SET i.quantity = i.quantity + 1, i.updatedAt = CURRENT_TIMESTAMP " +
-            "WHERE i.id = :id AND i.quantity < :max")
-    int increaseIfNotMax(@Param("id") String id, @Param("max") int max);
+    Optional<InventoryPhone> findByProductId(String productId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE InventoryPhone i SET i.quantity = i.quantity - 1, i.updatedAt = CURRENT_TIMESTAMP " +
-            "WHERE i.id = :id AND i.quantity > 0")
-    int decreaseIfAvailable(@Param("id") String id);
+    @Query("UPDATE InventoryPhone i SET i.totalQuantity = i.totalQuantity + 1, i.updatedAt = CURRENT_TIMESTAMP " +
+            "WHERE i.productId = :productId AND i.totalQuantity < :max")
+    int increaseIfNotMax(@Param("productId") String productId, @Param("max") int max);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE InventoryPhone i SET i.totalQuantity = i.totalQuantity - 1, i.updatedAt = CURRENT_TIMESTAMP " +
+            "WHERE i.productId = :productId AND i.totalQuantity > 0")
+    int decreaseIfAvailable(@Param("productId") String productId);
 }

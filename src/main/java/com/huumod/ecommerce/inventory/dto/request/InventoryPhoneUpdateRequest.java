@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -18,13 +19,13 @@ public class InventoryPhoneUpdateRequest {
 
     String name;
 
-    Integer quantity;
+    Integer totalQuantity;
 
     String status;
 
     List<String> images;
 
-    InventoryPhoneOption option;
+    Set<String> option;
 
     Instant createdAt;
 

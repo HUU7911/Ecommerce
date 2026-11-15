@@ -8,6 +8,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -29,16 +30,15 @@ public class InventoryPhone {
     String name;
 
     @Column(nullable = false)
-    Integer quantity;
+    Integer totalQuantity;
 
     @Column(nullable = false)
     String status;
 
     List<String> images;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    InventoryPhoneOption option;
+    @OneToMany(fetch = FetchType.EAGER)
+    Set<InventoryPhoneOption> option;
 
     Instant createdAt;
 

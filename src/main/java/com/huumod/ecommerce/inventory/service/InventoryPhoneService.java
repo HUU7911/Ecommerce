@@ -5,7 +5,9 @@ import com.huumod.ecommerce.common.exception.AppException;
 import com.huumod.ecommerce.common.exception.ErrorCode;
 import com.huumod.ecommerce.inventory.dto.request.InventoryPhoneRequest;
 import com.huumod.ecommerce.inventory.dto.response.InventoryPhoneResponse;
+import com.huumod.ecommerce.inventory.entity.InventoryPhoneOption;
 import com.huumod.ecommerce.inventory.mapper.InventoryPhoneMapper;
+import com.huumod.ecommerce.inventory.repository.InventoryPhoneOptionRepository;
 import com.huumod.ecommerce.inventory.repository.InventoryPhoneRepository;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -16,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,18 +29,29 @@ public class InventoryPhoneService {
 
     InventoryPhoneMapper inventoryPhoneMapper;
     InventoryPhoneRepository inventoryPhoneRepository;
+    InventoryPhoneOptionRepository inventoryPhoneOptionRepository;
 
     static int MAX_QUANTITY = 99;
 
-    public InventoryPhoneResponse createInventory(InventoryPhoneRequest request) {
+    public InventoryPhoneResponse createInventory(String phoneOptionId, InventoryPhoneRequest request) {
         if (inventoryPhoneRepository.existsByProductId(request.getProductId()))
             throw new AppException(ErrorCode.INVENTORY_EXSITED);
 
         var inventory = inventoryPhoneMapper.toInventoryPhone(request);
 
-        if (Objects.isNull(request.getQuantity()))
-            inventory.setQuantity(1);
+        Set<InventoryPhoneOption> optionSet = new HashSet<>();
+        optionSet.add(inventoryPhoneOptionRepository.findById(phoneOptionId).orElse(null));
+        inventory.setOption(optionSet);
 
+        var phoneOption = inventoryPhoneOptionRepository.findById(phoneOptionId).orElseThrow(
+                () -> new AppException(ErrorCode.PHONE_NOT_FOUND)
+        );
+        Integer totalQuantity = 0;
+        totalQuantity += phoneOption.getQuantity();
+
+        inventory.setTotalQuantity(totalQuantity);
+        inventory.setCreatedAt(Instant.now());
+        inventory.setUpdatedAt(Instant.now());
         inventory = inventoryPhoneRepository.save(inventory);
 
         return inventoryPhoneMapper.toInventoryPhoneResponse(inventory);
@@ -61,37 +76,37 @@ public class InventoryPhoneService {
     }
 
     @Transactional
-    public InventoryPhoneResponse increaseQuantity(String id) {
-        int updated = inventoryPhoneRepository.increaseIfNotMax(id, MAX_QUANTITY);
+    public InventoryPhoneResponse increaseQuantity(String productId) {
+        int updated = inventoryPhoneRepository.increaseIfNotMax(productId, MAX_QUANTITY);
 
         if (updated == 0) {
-            if (!inventoryPhoneRepository.existsById(id))
+            if (!inventoryPhoneRepository.existsByProductId(productId))
                 throw new AppException(ErrorCode.INVENTORY_NOT_FOUND);
             throw new AppException(ErrorCode.INVENTORY_MAX_SIZE);
         }
 
-        var data = inventoryPhoneRepository.findById(id).orElseThrow(
-                () -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
+        var data = inventoryPhoneRepository.findByProductId(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
 
         return inventoryPhoneMapper.toInventoryPhoneResponse(data);
     }
 
     @Transactional
-    public InventoryPhoneResponse reduceQuantity(String id) {
-        int updated = inventoryPhoneRepository.decreaseIfAvailable(id);
+    public InventoryPhoneResponse reduceQuantity(String productId) {
+        int updated = inventoryPhoneRepository.decreaseIfAvailable(productId);
 
         if (updated == 0) {
-            if (!inventoryPhoneRepository.existsById(id))
+            if (!inventoryPhoneRepository.existsByProductId(productId))
                 throw new AppException(ErrorCode.INVENTORY_NOT_FOUND);
             throw new AppException(ErrorCode.PRODUCT_OUT_STOCK);
         }
 
-        var data = inventoryPhoneRepository.findById(id).orElseThrow(
-                () -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
+        var data = inventoryPhoneRepository.findByProductId(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
 
         var response = inventoryPhoneMapper.toInventoryPhoneResponse(data);
 
-        if (data.getQuantity() == 0)
+        if (data.getTotalQuantity() == 0)
             response.setStatus("The product is out of stock.");
 
         return response;
