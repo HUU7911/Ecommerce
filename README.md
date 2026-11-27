@@ -1,4 +1,4 @@
-# He thong thuong mai dien tu thiet ke theo kien truc monolithic
+# Ecommerce is system e-commerce sell iphone for Onetechphone shop
 
 # ▶️ Running the Project
 
@@ -30,13 +30,13 @@ docker ps
 
 ## 3. Build Project
 
-Nếu sử dụng Maven:
+Use Maven:
 
 ```bash
 mvn clean install
 ```
 
-Hoặc:
+Or:
 
 ```bash
 ./mvnw clean install
@@ -44,29 +44,11 @@ Hoặc:
 
 ---
 
-## 4. Run Services
+## 4. Run project
 
-Có thể chạy từng service bằng Maven:
-
-```bash
-cd discovery-service
-mvn spring-boot:run
-```
-
-Sau đó:
+Run for Maven:
 
 ```bash
-cd ../identity-service
+cd server
 mvn spring-boot:run
 ```
-
-```bash
-cd ../product-service
-mvn spring-boot:run
-```
-
-```bash
-cd ../order-service
-mvn spring-boot:run
-```
----
