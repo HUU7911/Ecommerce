@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.configuration;
+package com.huumod.ecommerce.contract.configuration;
 
 import com.huumod.ecommerce.authentication.dto.request.IntrospectRequest;
 import com.huumod.ecommerce.authentication.service.AuthenticationService;

@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.configuration;
+package com.huumod.ecommerce.contract.configuration;
 
 import com.huumod.ecommerce.identity.constant.RoleDefine;
 import com.huumod.ecommerce.identity.entity.Role;

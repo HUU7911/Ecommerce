@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.inventory.controller;
 
-import com.huumod.ecommerce.common.ApiResponse;
-import com.huumod.ecommerce.common.PageResponse;
+import com.huumod.ecommerce.contract.common.ApiResponse;
+import com.huumod.ecommerce.contract.common.PageResponse;
 import com.huumod.ecommerce.inventory.dto.request.InventoryPhoneRequest;
 import com.huumod.ecommerce.inventory.dto.response.InventoryPhoneResponse;
 import com.huumod.ecommerce.inventory.service.InventoryPhoneService;

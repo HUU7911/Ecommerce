@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.product.controller;
 
-import com.huumod.ecommerce.common.ApiResponse;
-import com.huumod.ecommerce.common.PageResponse;
+import com.huumod.ecommerce.contract.common.ApiResponse;
+import com.huumod.ecommerce.contract.common.PageResponse;
 import com.huumod.ecommerce.product.dto.request.PhoneRequest;
 import com.huumod.ecommerce.product.dto.request.PhoneUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.PhoneResponse;

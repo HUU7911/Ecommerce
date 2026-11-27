@@ -1,8 +1,8 @@
 package com.huumod.ecommerce.product.service;
 
-import com.huumod.ecommerce.common.PageResponse;
-import com.huumod.ecommerce.common.exception.AppException;
-import com.huumod.ecommerce.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.common.PageResponse;
+import com.huumod.ecommerce.contract.common.exception.AppException;
+import com.huumod.ecommerce.contract.common.exception.ErrorCode;
 import com.huumod.ecommerce.file.service.FileService;
 import com.huumod.ecommerce.product.dto.request.AccessoryRequest;
 import com.huumod.ecommerce.product.dto.request.AccessoryUpdateRequest;

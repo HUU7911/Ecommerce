@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.product.service;
 
-import com.huumod.ecommerce.common.exception.AppException;
-import com.huumod.ecommerce.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.common.exception.AppException;
+import com.huumod.ecommerce.contract.common.exception.ErrorCode;
 import com.huumod.ecommerce.product.dto.request.CategoryRequest;
 import com.huumod.ecommerce.product.dto.response.CategoryResponse;
 import com.huumod.ecommerce.product.mapper.CategoryMapper;

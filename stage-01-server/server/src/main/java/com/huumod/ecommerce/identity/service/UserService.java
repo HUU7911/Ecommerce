@@ -1,8 +1,8 @@
 package com.huumod.ecommerce.identity.service;
 
-import com.huumod.ecommerce.common.event.NotificationEvent;
-import com.huumod.ecommerce.common.exception.AppException;
-import com.huumod.ecommerce.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.common.event.NotificationEvent;
+import com.huumod.ecommerce.contract.common.exception.AppException;
+import com.huumod.ecommerce.contract.common.exception.ErrorCode;
 import com.huumod.ecommerce.identity.constant.RoleDefine;
 import com.huumod.ecommerce.identity.dto.request.UserCreationRequest;
 import com.huumod.ecommerce.identity.dto.request.UserUpdateRequest;

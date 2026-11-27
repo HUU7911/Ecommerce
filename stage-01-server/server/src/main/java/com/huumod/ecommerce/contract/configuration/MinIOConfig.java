@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.configuration;
+package com.huumod.ecommerce.contract.configuration;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;

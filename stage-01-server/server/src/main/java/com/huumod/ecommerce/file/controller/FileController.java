@@ -1,6 +1,6 @@
 package com.huumod.ecommerce.file.controller;
 
-import com.huumod.ecommerce.common.ApiResponse;
+import com.huumod.ecommerce.contract.common.ApiResponse;
 import com.huumod.ecommerce.file.dto.response.FileResponse;
 import com.huumod.ecommerce.file.service.FileService;
 import lombok.AccessLevel;

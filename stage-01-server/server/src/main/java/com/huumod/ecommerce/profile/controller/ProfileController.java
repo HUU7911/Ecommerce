@@ -1,6 +1,6 @@
 package com.huumod.ecommerce.profile.controller;
 
-import com.huumod.ecommerce.common.ApiResponse;
+import com.huumod.ecommerce.contract.common.ApiResponse;
 import com.huumod.ecommerce.profile.dto.request.ProfileCreationRequest;
 import com.huumod.ecommerce.profile.dto.response.ProfileResponse;
 import com.huumod.ecommerce.profile.service.ProfileService;

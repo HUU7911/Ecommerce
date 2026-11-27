@@ -1,6 +1,6 @@
 package com.huumod.ecommerce.product.controller;
 
-import com.huumod.ecommerce.common.ApiResponse;
+import com.huumod.ecommerce.contract.common.ApiResponse;
 import com.huumod.ecommerce.product.dto.request.CategoryRequest;
 import com.huumod.ecommerce.product.dto.response.CategoryResponse;
 import com.huumod.ecommerce.product.service.CategoryService;

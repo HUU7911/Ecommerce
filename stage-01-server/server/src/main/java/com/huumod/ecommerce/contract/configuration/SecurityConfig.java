@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.configuration;
+package com.huumod.ecommerce.contract.configuration;
 
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;

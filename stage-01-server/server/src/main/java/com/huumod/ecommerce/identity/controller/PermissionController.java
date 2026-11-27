@@ -1,6 +1,6 @@
 package com.huumod.ecommerce.identity.controller;
 
-import com.huumod.ecommerce.common.ApiResponse;
+import com.huumod.ecommerce.contract.common.ApiResponse;
 import com.huumod.ecommerce.identity.dto.request.PermissionRequest;
 import com.huumod.ecommerce.identity.dto.response.PermissionResponse;
 import com.huumod.ecommerce.identity.service.PermissionService;

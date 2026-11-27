@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.common;
+package com.huumod.ecommerce.contract.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
