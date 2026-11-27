@@ -31,6 +31,10 @@ public class InventoryAccessory {
 
     List<String> images;
 
+    String type;
+
+    String price;
+
     Instant createdAt;
 
     Instant updatedAt;
