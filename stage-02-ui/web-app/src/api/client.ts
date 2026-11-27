@@ -1,4 +1,4 @@
-import axios, {AxiosError, AxiosRequestConfig} from "axios";
+import axios, {AxiosError, type AxiosRequestConfig} from "axios";
 import type { ApiResponse } from "./types.ts";
 
 const API_URL = import.meta.env.VITE_API_URL;
