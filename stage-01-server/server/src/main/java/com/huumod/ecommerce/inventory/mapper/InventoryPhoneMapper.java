@@ -17,5 +17,6 @@ public interface InventoryPhoneMapper {
     @Mapping(target = "option", ignore = true)
     InventoryPhoneResponse toInventoryPhoneResponse(InventoryPhone phone);
 
+    @Mapping(target = "option", ignore = true)
     void updateInventoryPhone(@MappingTarget InventoryPhone inventoryPhone, InventoryPhoneUpdateRequest request);
 }

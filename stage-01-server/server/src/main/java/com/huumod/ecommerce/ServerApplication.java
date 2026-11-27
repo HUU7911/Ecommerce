@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
 @SpringBootApplication
-public class EcommerceApplication {
+public class ServerApplication {
 
 	public static void main(String[] args) {
 		Dotenv dotenv = Dotenv.configure()
@@ -17,7 +17,6 @@ public class EcommerceApplication {
 		dotenv.entries().forEach(entry ->
 				System.setProperty(entry.getKey(), entry.getValue())
 		);
-		SpringApplication.run(EcommerceApplication.class, args);
+		SpringApplication.run(ServerApplication.class, args);
 	}
-
 }
