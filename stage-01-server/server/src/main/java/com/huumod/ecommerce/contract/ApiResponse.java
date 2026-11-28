@@ -1,11 +1,8 @@
-package com.huumod.ecommerce.contract.common;
+package com.huumod.ecommerce.contract;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Collections;
-import java.util.List;
 
 @Data
 @Builder
@@ -13,12 +10,11 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PageResponse<T> {
-    int currentPage;
-    int pageSize;
-    int totalPages;
-    long totalElements;
+public class ApiResponse<T> {
 
     @Builder.Default
-    List<T> data = Collections.emptyList();
+    int code = 1000;
+
+    String message;
+    T results;
 }

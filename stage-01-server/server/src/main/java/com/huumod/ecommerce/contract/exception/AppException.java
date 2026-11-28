@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.contract.common.exception;
+package com.huumod.ecommerce.contract.exception;
 
 import lombok.Getter;
 import lombok.Setter;

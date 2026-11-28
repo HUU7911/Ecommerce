@@ -24,7 +24,12 @@ public class SecurityConfig {
     @NonFinal
     private final String[] PUBLIC_MATCHERS = {
             "/auth/**",
-            "/users/create"
+            "/users/create",
+    };
+
+    @NonFinal
+    private final String[] GET_PUBLIC_ENDPOINT = {
+            "/search/product"
     };
 
     @Autowired
@@ -35,6 +40,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                         .requestMatchers(HttpMethod.POST,PUBLIC_MATCHERS).permitAll()
+                        .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINT).permitAll()
                         .anyRequest().authenticated());
 
         http.oauth2ResourceServer(oauth2 ->

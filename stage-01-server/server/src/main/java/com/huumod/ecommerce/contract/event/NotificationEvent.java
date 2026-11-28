@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.contract.common.event;
+package com.huumod.ecommerce.contract.event;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

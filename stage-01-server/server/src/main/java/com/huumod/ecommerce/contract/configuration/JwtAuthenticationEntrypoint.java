@@ -1,8 +1,8 @@
 package com.huumod.ecommerce.contract.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huumod.ecommerce.contract.common.ApiResponse;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.ApiResponse;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

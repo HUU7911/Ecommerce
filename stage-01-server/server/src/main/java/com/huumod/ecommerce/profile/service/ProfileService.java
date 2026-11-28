@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.profile.service;
 
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.file.service.FileService;
 import com.huumod.ecommerce.profile.dto.request.ProfileCreationRequest;
 import com.huumod.ecommerce.profile.dto.response.ProfileResponse;

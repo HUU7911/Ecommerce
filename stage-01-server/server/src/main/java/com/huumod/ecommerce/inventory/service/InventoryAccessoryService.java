@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.inventory.service;
 
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.inventory.dto.request.InventoryAccessoryRequest;
 import com.huumod.ecommerce.inventory.dto.response.InventoryAccessoryResponse;
 import com.huumod.ecommerce.inventory.mapper.InventoryAccessoryMapper;

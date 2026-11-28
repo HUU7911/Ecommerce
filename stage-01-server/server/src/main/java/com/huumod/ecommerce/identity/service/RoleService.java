@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.identity.service;
 
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.identity.dto.request.RoleRequest;
 import com.huumod.ecommerce.identity.dto.request.RoleUpdateRequest;
 import com.huumod.ecommerce.identity.dto.response.RoleResponse;

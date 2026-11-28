@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.product.service;
 
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.product.dto.request.PhoneDetailRequest;
 import com.huumod.ecommerce.product.dto.request.PhoneDetailUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.PhoneDetailResponse;

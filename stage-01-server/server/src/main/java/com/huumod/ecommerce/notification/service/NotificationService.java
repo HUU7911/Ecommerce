@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.notification.service;
 
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.notification.dto.request.EmailRequest;
 import com.huumod.ecommerce.notification.dto.request.SendEmailRequest;
 import com.huumod.ecommerce.notification.dto.request.Sender;

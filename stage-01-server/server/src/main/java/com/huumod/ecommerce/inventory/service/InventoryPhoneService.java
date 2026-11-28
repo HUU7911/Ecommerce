@@ -1,8 +1,8 @@
 package com.huumod.ecommerce.inventory.service;
 
-import com.huumod.ecommerce.contract.common.PageResponse;
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.PageResponse;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.inventory.dto.request.InventoryPhoneRequest;
 import com.huumod.ecommerce.inventory.dto.response.InventoryPhoneResponse;
 import com.huumod.ecommerce.inventory.entity.InventoryPhoneOption;

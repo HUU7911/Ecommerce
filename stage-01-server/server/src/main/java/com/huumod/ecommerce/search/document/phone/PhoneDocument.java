@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.annotations.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -32,11 +33,14 @@ public class PhoneDocument {
     @Field(type = FieldType.Object)
     List<PhoneDocumentOption> options;
 
+    @Field(type = FieldType.Object)
+    Set<CategoryDocument> categories;
+
     @Field(type = FieldType.Text)
     List<String> images;
 
     @Field(type = FieldType.Object)
-    PhoneDetail detail;
+    PhoneDocumentDetail detail;
 
     LocalDate createdAt;
 }

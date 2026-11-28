@@ -1,8 +1,8 @@
 package com.huumod.ecommerce.contract.configuration;
 
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
-import com.huumod.ecommerce.identity.constant.RoleDefine;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
+import com.huumod.ecommerce.contract.constant.RoleDefine;
 import com.huumod.ecommerce.identity.entity.Role;
 import com.huumod.ecommerce.identity.entity.User;
 import com.huumod.ecommerce.identity.repository.RoleRepository;

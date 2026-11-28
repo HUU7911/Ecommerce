@@ -1,6 +1,6 @@
-package com.huumod.ecommerce.contract.common.exception;
+package com.huumod.ecommerce.contract.exception;
 
-import com.huumod.ecommerce.contract.common.ApiResponse;
+import com.huumod.ecommerce.contract.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

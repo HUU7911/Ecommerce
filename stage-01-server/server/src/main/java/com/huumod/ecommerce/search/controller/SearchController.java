@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.search.controller;
 
-import com.huumod.ecommerce.contract.common.ApiResponse;
-import com.huumod.ecommerce.contract.common.PageResponse;
+import com.huumod.ecommerce.contract.ApiResponse;
+import com.huumod.ecommerce.contract.PageResponse;
 import com.huumod.ecommerce.search.document.phone.PhoneDocument;
 import com.huumod.ecommerce.search.service.SearchService;
 import jakarta.validation.constraints.PositiveOrZero;

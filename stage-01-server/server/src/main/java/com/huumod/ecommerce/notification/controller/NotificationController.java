@@ -1,6 +1,6 @@
 package com.huumod.ecommerce.notification.controller;
 
-import com.huumod.ecommerce.contract.common.event.NotificationEvent;
+import com.huumod.ecommerce.contract.event.NotificationEvent;
 import com.huumod.ecommerce.notification.dto.request.Recipient;
 import com.huumod.ecommerce.notification.dto.request.SendEmailRequest;
 import com.huumod.ecommerce.notification.service.NotificationService;

@@ -1,4 +1,4 @@
-package com.huumod.ecommerce.identity.constant;
+package com.huumod.ecommerce.contract.constant;
 
 public enum RoleDefine {
     USER,

@@ -6,7 +6,7 @@ import com.huumod.ecommerce.authentication.dto.request.JwtRequest;
 import com.huumod.ecommerce.authentication.dto.response.AuthenticationResponse;
 import com.huumod.ecommerce.authentication.dto.response.IntrospectResponse;
 import com.huumod.ecommerce.authentication.service.AuthenticationService;
-import com.huumod.ecommerce.contract.common.ApiResponse;
+import com.huumod.ecommerce.contract.ApiResponse;
 import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

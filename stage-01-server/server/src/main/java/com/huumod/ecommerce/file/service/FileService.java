@@ -1,7 +1,7 @@
 package com.huumod.ecommerce.file.service;
 
-import com.huumod.ecommerce.contract.common.exception.AppException;
-import com.huumod.ecommerce.contract.common.exception.ErrorCode;
+import com.huumod.ecommerce.contract.exception.AppException;
+import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.file.dto.response.FileData;
 import com.huumod.ecommerce.file.dto.response.FileResponse;
 import com.huumod.ecommerce.file.mapper.FileMgmtMapper;

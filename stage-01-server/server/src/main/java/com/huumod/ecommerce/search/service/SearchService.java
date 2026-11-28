@@ -1,6 +1,6 @@
 package com.huumod.ecommerce.search.service;
 
-import com.huumod.ecommerce.contract.common.PageResponse;
+import com.huumod.ecommerce.contract.PageResponse;
 import com.huumod.ecommerce.search.document.phone.PhoneDocument;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
