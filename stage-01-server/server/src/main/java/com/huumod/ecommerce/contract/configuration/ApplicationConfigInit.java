@@ -73,14 +73,6 @@ public class ApplicationConfigInit {
                                     .description("has permission " + permission)
                             .build());
                 }
-
-                var roleAdmin = roleRepository.findById(RoleDefine.ADMIN.name()).orElseThrow(
-                        () -> new AppException(ErrorCode.UNAUTHENTICATED)
-                );
-
-                Set<Permission> permissions = new HashSet<>(
-                        permissionRepository.findAllById(List.of(PermissionName)));
-                roleAdmin.setPermissions(permissions);
             }
 
             // Role manager
@@ -111,6 +103,8 @@ public class ApplicationConfigInit {
                         .name(RoleDefine.ADMIN.name())
                         .description("has role admin")
                         .build());
+
+                adminRole.setPermissions(permissions);
 
                 Set<Role> roles = new HashSet<>();
                 roles.add(adminRole);
