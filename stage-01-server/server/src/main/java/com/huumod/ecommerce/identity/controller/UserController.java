@@ -1,6 +1,7 @@
 package com.huumod.ecommerce.identity.controller;
 
 import com.huumod.ecommerce.contract.common.ApiResponse;
+import com.huumod.ecommerce.contract.common.PageResponse;
 import com.huumod.ecommerce.identity.dto.request.UserCreationRequest;
 import com.huumod.ecommerce.identity.dto.request.UserUpdateRequest;
 import com.huumod.ecommerce.identity.dto.response.UserResponse;
@@ -29,9 +30,12 @@ public class UserController {
     }
 
     @GetMapping
-    ApiResponse<List<UserResponse>> getAllUsers() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .results(userService.getAllUsers())
+    ApiResponse<PageResponse<UserResponse>> getAllUsers(
+            @RequestParam(value = "page", required = false, defaultValue = "5") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
+        return ApiResponse.<PageResponse<UserResponse>>builder()
+                .results(userService.getAllUsers(page, size))
                 .build();
     }
 

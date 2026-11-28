@@ -46,4 +46,8 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     Set<Role> roles;
+
+    LocalDate createdAt;
+
+    LocalDate modifiedAt;
 }

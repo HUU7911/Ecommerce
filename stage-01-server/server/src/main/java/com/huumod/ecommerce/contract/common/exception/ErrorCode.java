@@ -28,7 +28,8 @@ public enum ErrorCode {
     INVENTORY_EXSITED(1014, "inventory existed", HttpStatus.CONFLICT),
     INVENTORY_NOT_FOUND(1015, "inventory not found", HttpStatus.NOT_FOUND),
     INVENTORY_MAX_SIZE(1016, "inventory max size", HttpStatus.BAD_REQUEST),
-    PRODUCT_OUT_STOCK(1017, "product out stock", HttpStatus.BAD_REQUEST)
+    PRODUCT_OUT_STOCK(1017, "product out stock", HttpStatus.BAD_REQUEST),
+    BUCKET_EXISTED(1018, "bucket has been existed", HttpStatus.CREATED)
     ;
 
     private int code;

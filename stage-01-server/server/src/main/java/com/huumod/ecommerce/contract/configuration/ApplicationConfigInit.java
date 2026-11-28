@@ -1,16 +1,21 @@
 package com.huumod.ecommerce.contract.configuration;
 
+import com.huumod.ecommerce.contract.common.exception.AppException;
+import com.huumod.ecommerce.contract.common.exception.ErrorCode;
 import com.huumod.ecommerce.identity.constant.RoleDefine;
 import com.huumod.ecommerce.identity.entity.Role;
 import com.huumod.ecommerce.identity.entity.User;
-import com.huumod.ecommerce.identity.repository.PermissionRepository;
 import com.huumod.ecommerce.identity.repository.RoleRepository;
 import com.huumod.ecommerce.identity.repository.UserRepository;
 import com.huumod.ecommerce.profile.dto.request.ProfileCreationRequest;
 import com.huumod.ecommerce.profile.service.ProfileService;
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +31,10 @@ import java.util.Set;
 public class ApplicationConfigInit {
 
     @NonFinal
+    @Value("minio.config.bucket")
+    private final String BUCKET;
+
+    @NonFinal
     private final String USERNAME = "admin";
 
     @NonFinal
@@ -36,8 +45,10 @@ public class ApplicationConfigInit {
     private final ProfileService profileService;
 
     @Bean
-    public ApplicationRunner applicationRunner(RoleRepository roleRepository, PermissionRepository permissionRepository) {
-        return args -> {
+    public ApplicationRunner applicationRunner(RoleRepository roleRepository, MinioClient minioClient) {
+        return _ -> {
+
+            // Role manager
             if (roleRepository.findById(RoleDefine.USER.name()).isEmpty()) {
                 roleRepository.save(Role.builder()
                                 .name(RoleDefine.USER.name())
@@ -74,6 +85,21 @@ public class ApplicationConfigInit {
                 log.info("user has been saved");
             }
             log.info("user has been created");
+
+            // MinIO
+            try {
+                boolean existed = minioClient.bucketExists(BucketExistsArgs.builder()
+                                .bucket(BUCKET)
+                        .build());
+
+                if (!existed) {
+                    minioClient.makeBucket(MakeBucketArgs.builder()
+                                    .bucket(BUCKET)
+                            .build());
+                }
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.BUCKET_EXISTED);
+            }
         };
     }
 }

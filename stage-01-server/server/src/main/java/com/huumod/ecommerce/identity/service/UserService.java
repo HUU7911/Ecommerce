@@ -1,5 +1,6 @@
 package com.huumod.ecommerce.identity.service;
 
+import com.huumod.ecommerce.contract.common.PageResponse;
 import com.huumod.ecommerce.contract.common.event.NotificationEvent;
 import com.huumod.ecommerce.contract.common.exception.AppException;
 import com.huumod.ecommerce.contract.common.exception.ErrorCode;
@@ -18,14 +19,18 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -53,6 +58,8 @@ public class UserService {
         Set<Role> roles = new HashSet<>();
         roleRepository.findById(RoleDefine.USER.name()).ifPresent(roles::add);
         user.setRoles(roles);
+        user.setCreatedAt(LocalDate.from(Instant.now()));
+        user.setModifiedAt(LocalDate.from(Instant.now()));
 
         user = userRepository.save(user);
 
@@ -93,6 +100,8 @@ public class UserService {
         Set<Role> roles = new HashSet<>();
         roleRepository.findById(RoleDefine.STAFF.name()).ifPresent(roles::add);
         user.setRoles(roles);
+        user.setCreatedAt(LocalDate.from(Instant.now()));
+        user.setModifiedAt(LocalDate.from(Instant.now()));
 
         user = userRepository.save(user);
 
@@ -128,16 +137,29 @@ public class UserService {
                 () -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         userMapper.updateUser(user, request);
+        user.setModifiedAt(LocalDate.from(Instant.now()));
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        user = userRepository.save(user);
+
+        return userMapper.toUserResponse(user);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(userMapper::toUserResponse)
-                .toList();
+    public PageResponse<UserResponse> getAllUsers(int page, int size) {
+
+        Sort sort = Sort.by("modifiedAt").descending();
+        Pageable pageable = PageRequest.of(page -1, size, sort);
+        var pageData = userRepository.findAll(pageable);
+
+        return PageResponse.<UserResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(pageData.stream()
+                        .map(userMapper::toUserResponse)
+                        .toList()
+                ).build();
     }
 
     public UserResponse getMyInfor() {
