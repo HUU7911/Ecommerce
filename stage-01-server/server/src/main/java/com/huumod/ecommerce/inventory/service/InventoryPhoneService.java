@@ -33,6 +33,7 @@ public class InventoryPhoneService {
 
     static int MAX_QUANTITY = 99;
 
+    @Transactional
     public InventoryPhoneResponse createInventory(String phoneOptionId, InventoryPhoneRequest request) {
         if (inventoryPhoneRepository.existsByProductId(request.getProductId()))
             throw new AppException(ErrorCode.INVENTORY_EXSITED);

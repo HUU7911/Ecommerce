@@ -35,7 +35,7 @@ public class AuthenticationController {
 
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request)
-            throws ParseException, JOSEException {
+            throws ParseException {
         return ApiResponse.<IntrospectResponse>builder()
                 .results(authenticationService.introspect(request))
                 .build();
@@ -50,7 +50,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    ApiResponse<Void> logout(@RequestBody JwtRequest request) throws ParseException, JOSEException {
+    ApiResponse<Void> logout(@RequestBody JwtRequest request) {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder()
                 .message("logout successfully")
