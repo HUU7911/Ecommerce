@@ -1,10 +1,13 @@
 package com.huumod.ecommerce.contract.configuration;
 
+import com.huumod.ecommerce.contract.constant.PermissionDefine;
 import com.huumod.ecommerce.contract.exception.AppException;
 import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.contract.constant.RoleDefine;
+import com.huumod.ecommerce.identity.entity.Permission;
 import com.huumod.ecommerce.identity.entity.Role;
 import com.huumod.ecommerce.identity.entity.User;
+import com.huumod.ecommerce.identity.repository.PermissionRepository;
 import com.huumod.ecommerce.identity.repository.RoleRepository;
 import com.huumod.ecommerce.identity.repository.UserRepository;
 import com.huumod.ecommerce.profile.dto.request.ProfileCreationRequest;
@@ -22,8 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -40,21 +42,71 @@ public class ApplicationConfigInit {
     @NonFinal
     private final String PASSWORD = "admin";
 
+    @NonFinal
+    private final String[] PermissionName = {
+            "READ",
+            "UPLOAD",
+            "POST",
+            "UPDATE_POST",
+            "DELETE",
+            "PAID",
+            "CANCEL",
+    };
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProfileService profileService;
 
     @Bean
-    public ApplicationRunner applicationRunner(RoleRepository roleRepository, MinioClient minioClient) {
+    public ApplicationRunner applicationRunner(
+            RoleRepository roleRepository,
+            PermissionRepository permissionRepository,
+            MinioClient minioClient
+    ) {
         return _ -> {
+
+            // Permission manager
+            for (String permission : PermissionName) {
+                if (Objects.nonNull(permission)) {
+                    permissionRepository.save(Permission.builder()
+                                    .name(permission)
+                                    .description("has permission " + permission)
+                            .build());
+                }
+
+                var roleAdmin = roleRepository.findById(RoleDefine.ADMIN.name()).orElseThrow(
+                        () -> new AppException(ErrorCode.UNAUTHENTICATED)
+                );
+
+                Set<Permission> permissions = new HashSet<>(
+                        permissionRepository.findAllById(List.of(PermissionName)));
+                roleAdmin.setPermissions(permissions);
+            }
 
             // Role manager
             if (roleRepository.findById(RoleDefine.USER.name()).isEmpty()) {
-                roleRepository.save(Role.builder()
+                // Role User
+                var roleUser = roleRepository.save(Role.builder()
                                 .name(RoleDefine.USER.name())
                                 .description("has role users")
                         .build());
 
+                Set<Permission> permissionUser = new HashSet<>(
+                        permissionRepository.findAllById(
+                                Collections.singleton(PermissionDefine.READ.name())));
+                roleUser.setPermissions(permissionUser);
+
+                // Role staff
+                var roleStaff = roleRepository.save(Role.builder()
+                        .name(RoleDefine.STAFF.name())
+                        .description("has role staff")
+                        .build());
+
+                Set<Permission> permissions = new HashSet<>(
+                        permissionRepository.findAllById(List.of(PermissionName)));
+                roleStaff.setPermissions(permissions);
+
+                // Role admin
                 var adminRole = roleRepository.save(Role.builder()
                         .name(RoleDefine.ADMIN.name())
                         .description("has role admin")
@@ -63,6 +115,7 @@ public class ApplicationConfigInit {
                 Set<Role> roles = new HashSet<>();
                 roles.add(adminRole);
 
+                // User Admin
                 User user = User.builder()
                         .username(USERNAME)
                         .password(passwordEncoder.encode(PASSWORD))
