@@ -2,7 +2,6 @@ package com.huumod.ecommerce.search.kafka;
 
 import com.huumod.ecommerce.contract.event.CategoryEvent;
 import com.huumod.ecommerce.contract.event.PhoneEvent;
-import com.huumod.ecommerce.contract.constant.EventType;
 import com.huumod.ecommerce.search.document.phone.CategoryDocument;
 import com.huumod.ecommerce.search.document.phone.PhoneDocument;
 import com.huumod.ecommerce.search.mapper.PhoneDetailDocumentMapper;
@@ -26,7 +25,6 @@ public class KafkaConsumer {
 
     PhoneSearchRepository phoneSearchRepository;
     PhoneDetailDocumentMapper phoneDetailMapper;
-    EventType eventType;
 
     @KafkaListener(topics = "create-product")
     public void consume(PhoneEvent event) {
@@ -35,9 +33,9 @@ public class KafkaConsumer {
             return;
         }
 
-        switch (eventType) {
-            case CREATED, UPDATED -> phoneSearchRepository.save(toPhoneDocument(event));
-            case DELETED -> phoneSearchRepository.deleteById(event.getId());
+        switch (event.getEvent()) {
+            case "CREATED", "UPDATED" -> phoneSearchRepository.save(toPhoneDocument(event));
+            case "DELETED" -> phoneSearchRepository.deleteById(event.getId());
         }
     }
 

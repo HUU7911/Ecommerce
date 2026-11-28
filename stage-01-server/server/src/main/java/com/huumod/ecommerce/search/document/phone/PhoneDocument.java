@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Document(indexName = "phone")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Setting(settingPath = "")
+@Setting(settingPath = "/elasticsearch/product-setting.json")
 public class PhoneDocument {
 
     @Id

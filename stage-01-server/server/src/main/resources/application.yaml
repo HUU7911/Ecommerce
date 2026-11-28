@@ -1,6 +1,32 @@
 spring:
   application:
     name: server
+  # Elasticsearch
+  ssl:
+    bundle:
+      pem:
+        elastic:
+          truststore:
+            certificate: ${SSL}
+  elasticsearch:
+    uris: https://localhost:9200
+    username: elastic
+    password: ${ELASTIC_PASSWORD}
+    restclient:
+      ssl:
+        bundle: elastic
+    data:
+      elasticsearch:
+        repositories:
+          enabled: true
+  # Open feign
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 2000
+            read-timeout: 5000
   # Kafka
   kafka:
     bootstrap-servers: localhost:9092
@@ -36,16 +62,19 @@ spring:
         format_sql: false
     open-in-view: false
 
+# Server config
 server:
   port: 8080
   servlet:
     context-path: /ecommerce
 
+# Jwt
 jwt:
   signerKey: ${SIGNER_KEY}
   valid-duration: ${VALID_DURATION}
   refreshable-duration: ${REFRESHABLE_DURATION}
 
+# Brevo
 brevo:
   url: ${BREVO_URL}
   api-key: ${API_KEY_BREVO}
@@ -54,9 +83,14 @@ app:
   file:
     download-prefix: "http://localhost:8888/api/v1/file/media/download/"
 
+# MinIO
 minio:
   config:
     endpoint: ${ENDPOINT}
     accessKey: ${ACCESS_KEY}
     secretKey: ${SECRET_KEY}
     bucket: ${BUCKET}
+
+logging:
+  level:
+    org.hibernate.orm.connections.pooling: WARN

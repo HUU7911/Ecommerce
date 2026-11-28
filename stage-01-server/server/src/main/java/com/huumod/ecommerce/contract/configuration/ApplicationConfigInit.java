@@ -33,8 +33,8 @@ import java.util.*;
 public class ApplicationConfigInit {
 
     @NonFinal
-    @Value("minio.config.bucket")
-    private final String BUCKET;
+    @Value("${minio.config.bucket}")
+    private String BUCKET;
 
     @NonFinal
     private final String USERNAME = "admin";
@@ -84,8 +84,7 @@ public class ApplicationConfigInit {
                         .build());
 
                 Set<Permission> permissionUser = new HashSet<>(
-                        permissionRepository.findAllById(
-                                Collections.singleton(PermissionDefine.READ.name())));
+                        permissionRepository.findAllById(Collections.singleton(PermissionDefine.READ.name())));
                 roleUser.setPermissions(permissionUser);
 
                 // Role staff
@@ -121,6 +120,7 @@ public class ApplicationConfigInit {
                         .build();
                 user = userRepository.save(user);
 
+                // Create profile
                 profileService.createProfile(ProfileCreationRequest.builder()
                         .userId(user.getId())
                         .username(user.getUsername())
@@ -143,8 +143,6 @@ public class ApplicationConfigInit {
                     minioClient.makeBucket(MakeBucketArgs.builder()
                                     .bucket(BUCKET)
                             .build());
-                } else {
-                    throw new AppException(ErrorCode.BUCKET_EXISTED);
                 }
             } catch (Exception e) {
                 throw new AppException(ErrorCode.BUCKET_EXISTED);
