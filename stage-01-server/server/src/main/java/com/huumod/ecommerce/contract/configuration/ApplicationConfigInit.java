@@ -96,6 +96,8 @@ public class ApplicationConfigInit {
                     minioClient.makeBucket(MakeBucketArgs.builder()
                                     .bucket(BUCKET)
                             .build());
+                } else {
+                    throw new AppException(ErrorCode.BUCKET_EXISTED);
                 }
             } catch (Exception e) {
                 throw new AppException(ErrorCode.BUCKET_EXISTED);
