@@ -1,5 +1,7 @@
 package com.huumod.ecommerce.contract.configuration;
 
+import com.huumod.ecommerce.contract.constant.RoleDefine;
+import com.huumod.ecommerce.identity.entity.Role;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +34,12 @@ public class SecurityConfig {
             "/search/product"
     };
 
+    @NonFinal
+    private final String[] INVENTORY = {
+            "/inventories/accessories/**",
+            "/inventories/phones/**"
+    };
+
     @Autowired
     private CustomJwtDecode customJwtDecode;
 
@@ -41,6 +49,7 @@ public class SecurityConfig {
                 authorizeRequests
                         .requestMatchers(HttpMethod.POST,PUBLIC_MATCHERS).permitAll()
                         .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINT).permitAll()
+                        .requestMatchers(INVENTORY).hasAnyRole(RoleDefine.ADMIN.name(), RoleDefine.STAFF.name())
                         .anyRequest().authenticated());
 
         http.oauth2ResourceServer(oauth2 ->

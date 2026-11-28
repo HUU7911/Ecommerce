@@ -1,22 +1,28 @@
 package com.huumod.ecommerce.inventory.entity;
 
+import com.huumod.ecommerce.contract.constant.InventoryStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @Builder
-@Table(name = "inventory_phone")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(
+        name = "inventory_phone",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_inventory_phone_product",
+                columnNames = "product_id"
+        ),
+        indexes = @Index(name = "idx_inventory_phone_status", columnList = "status")
+)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InventoryPhone {
 
@@ -24,23 +30,40 @@ public class InventoryPhone {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column(nullable = false)
+    @Column(name = "product_id", nullable = false, unique = true, length = 36)
     String productId;
 
-    String name;
-
     @Column(nullable = false)
-    Integer totalQuantity;
+    @Builder.Default
+    Integer quantity = 0;
 
-    @Column(nullable = false)
-    String status;
+    @Column(name = "reserved_quantity", nullable = false)
+    @Builder.Default
+    Integer reservedQuantity = 0;
 
-    List<String> images;
+    @Column(name = "low_stock_threshold", nullable = false)
+    @Builder.Default
+    Integer lowStockThreshold = 5;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    Set<InventoryPhoneOption> option;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    @Builder.Default
+    InventoryStatus status = InventoryStatus.ACTIVE;
 
+    @Version
+    @Builder.Default
+    Long version = 0L;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     Instant createdAt;
 
+    @UpdateTimestamp
+    @Column(nullable = false)
     Instant updatedAt;
+
+    @Transient
+    public Integer getAvailableQuantity() {
+        return quantity - reservedQuantity;
+    }
 }

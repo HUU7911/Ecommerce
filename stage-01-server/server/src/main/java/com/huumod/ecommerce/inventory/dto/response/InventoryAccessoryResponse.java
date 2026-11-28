@@ -1,10 +1,10 @@
 package com.huumod.ecommerce.inventory.dto.response;
 
+import com.huumod.ecommerce.contract.constant.InventoryStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
-import java.util.List;
 
 @Getter
 @Setter
@@ -15,22 +15,18 @@ import java.util.List;
 public class InventoryAccessoryResponse {
 
     String id;
-
-    String  productId;
-
-    String name;
+    String productId;
 
     Integer quantity;
+    Integer reservedQuantity;
+    Integer availableQuantity;
 
-    String status;
+    Integer lowStockThreshold;
 
-    List<String> images;
+    InventoryStatus status;
 
-    String type;
-
-    String price;
+    Boolean lowStock;
 
     Instant createdAt;
-
     Instant updatedAt;
 }

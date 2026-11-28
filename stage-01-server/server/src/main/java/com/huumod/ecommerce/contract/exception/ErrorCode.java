@@ -29,7 +29,15 @@ public enum ErrorCode {
     INVENTORY_NOT_FOUND(1015, "inventory not found", HttpStatus.NOT_FOUND),
     INVENTORY_MAX_SIZE(1016, "inventory max size", HttpStatus.BAD_REQUEST),
     PRODUCT_OUT_STOCK(1017, "product out stock", HttpStatus.BAD_REQUEST),
-    BUCKET_EXISTED(1018, "bucket has been existed", HttpStatus.CREATED)
+    BUCKET_EXISTED(1018, "bucket has been existed", HttpStatus.CREATED),
+    INVALID_QUANTITY(1019, "invalid quantity", HttpStatus.BAD_REQUEST),
+    INVALID_INVENTORY_STATUS(1020, "invalid inventory status", HttpStatus.BAD_REQUEST),
+    INVENTORY_RESERVED(1021, "inventory has active reservations", HttpStatus.CONFLICT),
+    RESERVATION_NOT_FOUND(1022, "reservation not found", HttpStatus.NOT_FOUND),
+    RESERVATION_INVALID_STATUS(1023, "invalid reservation status", HttpStatus.CONFLICT),
+    RESERVATION_EXPIRED(1024, "reservation expired", HttpStatus.CONFLICT),
+    RESERVATION_ALREADY_PROCESSED(1025, "reservation already processed", HttpStatus.CONFLICT),
+    INVENTORY_CONCURRENT_MODIFICATION(1026, "inventory concurrent modification", HttpStatus.CONFLICT)
     ;
 
     private int code;

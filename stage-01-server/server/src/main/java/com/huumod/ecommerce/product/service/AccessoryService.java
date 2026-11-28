@@ -4,6 +4,8 @@ import com.huumod.ecommerce.contract.PageResponse;
 import com.huumod.ecommerce.contract.exception.AppException;
 import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.file.service.FileService;
+import com.huumod.ecommerce.inventory.dto.request.InventoryAccessoryRequest;
+import com.huumod.ecommerce.inventory.service.InventoryAccessoryService;
 import com.huumod.ecommerce.product.dto.request.AccessoryRequest;
 import com.huumod.ecommerce.product.dto.request.AccessoryUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.AccessoryResponse;
@@ -29,10 +31,11 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccessoryService {
 
-    AccessoryMapper accessoryMapper;
-    AccessoryRepository accessoryRepository;
-    CategoryRepository categoryRepository;
     FileService fileService;
+    AccessoryMapper accessoryMapper;
+    CategoryRepository categoryRepository;
+    AccessoryRepository accessoryRepository;
+    InventoryAccessoryService inventoryAccessoryService;
 
     public AccessoryResponse createAccessory(AccessoryRequest request, MultipartFile file)
             throws Exception {
@@ -48,6 +51,11 @@ public class AccessoryService {
         accessory.setImages(List.of(images.getUrl()));
 
         accessory = accessoryRepository.save(accessory);
+
+        inventoryAccessoryService.create(InventoryAccessoryRequest.builder()
+                .productId(accessory.getId())
+                .lowStockThreshold(5)
+                .build());
 
         return accessoryMapper.toAccessoryResponse(accessory);
     }

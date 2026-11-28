@@ -1,9 +1,11 @@
 package com.huumod.ecommerce.inventory.repository;
 
+import com.huumod.ecommerce.contract.constant.InventoryStatus;
 import com.huumod.ecommerce.inventory.entity.InventoryPhone;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -16,13 +18,23 @@ public interface InventoryPhoneRepository extends JpaRepository<InventoryPhone, 
 
     Optional<InventoryPhone> findByProductId(String productId);
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE InventoryPhone i SET i.totalQuantity = i.totalQuantity + 1, i.updatedAt = CURRENT_TIMESTAMP " +
-            "WHERE i.productId = :productId AND i.totalQuantity < :max")
-    int increaseIfNotMax(@Param("productId") String productId, @Param("max") int max);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT i FROM InventoryPhone i WHERE i.productId = :productId")
+    Optional<InventoryPhone> findByProductIdForUpdate(@Param("productId") String productId);
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE InventoryPhone i SET i.totalQuantity = i.totalQuantity - 1, i.updatedAt = CURRENT_TIMESTAMP " +
-            "WHERE i.productId = :productId AND i.totalQuantity > 0")
-    int decreaseIfAvailable(@Param("productId") String productId);
+    Page<InventoryPhone> findAllByStatus(InventoryStatus status, Pageable pageable);
+
+    @Query("""
+        SELECT i FROM InventoryPhone i
+        WHERE i.status = com.huumod.ecommerce.inventory.enums.InventoryStatus.ACTIVE
+        AND i.quantity - i.reservedQuantity <= i.lowStockThreshold
+    """)
+    Page<InventoryPhone> findLowStock(Pageable pageable);
+
+    @Query("""
+        SELECT i FROM InventoryPhone i
+        WHERE i.status = com.huumod.ecommerce.inventory.enums.InventoryStatus.ACTIVE
+        AND i.quantity = i.reservedQuantity
+    """)
+    Page<InventoryPhone> findOutOfStock(Pageable pageable);
 }

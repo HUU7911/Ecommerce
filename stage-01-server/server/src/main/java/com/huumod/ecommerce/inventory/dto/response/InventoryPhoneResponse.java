@@ -1,14 +1,13 @@
 package com.huumod.ecommerce.inventory.dto.response;
 
-import com.huumod.ecommerce.inventory.entity.InventoryPhoneOption;
+import com.huumod.ecommerce.contract.constant.InventoryStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,20 +15,18 @@ import java.util.Set;
 public class InventoryPhoneResponse {
 
     String id;
-
     String productId;
 
-    String name;
+    Integer quantity;
+    Integer reservedQuantity;
+    Integer availableQuantity;
 
-    Integer totalQuantity;
+    Integer lowStockThreshold;
 
-    String status;
+    InventoryStatus status;
 
-    List<String> images;
-
-    Set<InventoryPhoneOption> option;
+    Boolean lowStock;
 
     Instant createdAt;
-
     Instant updatedAt;
 }

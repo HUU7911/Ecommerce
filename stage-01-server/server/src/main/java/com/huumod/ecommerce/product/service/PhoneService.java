@@ -7,6 +7,8 @@ import com.huumod.ecommerce.contract.event.PhoneEvent;
 import com.huumod.ecommerce.contract.exception.AppException;
 import com.huumod.ecommerce.contract.exception.ErrorCode;
 import com.huumod.ecommerce.file.service.FileService;
+import com.huumod.ecommerce.inventory.dto.request.InventoryPhoneRequest;
+import com.huumod.ecommerce.inventory.service.InventoryPhoneService;
 import com.huumod.ecommerce.product.dto.request.PhoneRequest;
 import com.huumod.ecommerce.product.dto.request.PhoneUpdateRequest;
 import com.huumod.ecommerce.product.dto.response.PhoneResponse;
@@ -18,6 +20,7 @@ import com.huumod.ecommerce.product.mapper.event.PhoneEventOptionMapper;
 import com.huumod.ecommerce.product.repository.CategoryRepository;
 import com.huumod.ecommerce.product.repository.PhoneDetailRepository;
 import com.huumod.ecommerce.product.repository.PhoneRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -44,10 +47,12 @@ public class PhoneService {
     CategoryRepository categoryRepository;
     CategoryEventMapper categoryEventMapper;
     PhoneDetailRepository phoneDetailRepository;
+    InventoryPhoneService inventoryPhoneService;
     PhoneDetailEventMapper phoneDetailEventMapper;
     PhoneEventOptionMapper phoneEventOptionMapper;
     KafkaTemplate<String, PhoneEvent> kafkaTemplate;
 
+    @Transactional
     public PhoneResponse createPhone(PhoneRequest request, MultipartFile file) throws Exception {
         if (phoneRepository.existsByName(request.getName()))
             throw new AppException(ErrorCode.PHONE_EXISTED);
@@ -63,6 +68,9 @@ public class PhoneService {
         var images = fileService.uploadFile(file);
         phone.setImages(List.of(images.getUrl()));
         phone = phoneRepository.save(phone);
+
+        // Create Inventory
+        inventoryPhoneService.create(InventoryPhoneRequest.builder().productId(phone.getId()).lowStockThreshold(5).build());
 
         // Broker message with kafka
         PhoneEventDetail detail = phoneDetailEventMapper.toPhoneEventDetail(details);

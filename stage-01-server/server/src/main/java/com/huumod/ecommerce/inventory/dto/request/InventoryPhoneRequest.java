@@ -1,35 +1,21 @@
 package com.huumod.ecommerce.inventory.dto.request;
 
-import com.huumod.ecommerce.inventory.entity.InventoryPhoneOption;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Set;
-
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InventoryPhoneRequest {
 
-    String id;
-
+    @NotBlank
     String productId;
 
-    String name;
-
-    Integer totalQuantity;
-
-    String status;
-
-    List<String> images;
-
-    Set<String> option;
-
-    Instant createdAt;
-
-    Instant updatedAt;
+    @Min(0)
+    Integer lowStockThreshold = 5;
 }

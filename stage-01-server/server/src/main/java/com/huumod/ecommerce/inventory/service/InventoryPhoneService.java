@@ -1,15 +1,15 @@
 package com.huumod.ecommerce.inventory.service;
 
 import com.huumod.ecommerce.contract.PageResponse;
+import com.huumod.ecommerce.contract.constant.InventoryStatus;
 import com.huumod.ecommerce.contract.exception.AppException;
 import com.huumod.ecommerce.contract.exception.ErrorCode;
-import com.huumod.ecommerce.inventory.dto.request.InventoryPhoneRequest;
+import com.huumod.ecommerce.inventory.dto.request.*;
 import com.huumod.ecommerce.inventory.dto.response.InventoryPhoneResponse;
-import com.huumod.ecommerce.inventory.entity.InventoryPhoneOption;
+import com.huumod.ecommerce.inventory.entity.InventoryPhone;
 import com.huumod.ecommerce.inventory.mapper.InventoryPhoneMapper;
-import com.huumod.ecommerce.inventory.repository.InventoryPhoneOptionRepository;
 import com.huumod.ecommerce.inventory.repository.InventoryPhoneRepository;
-import jakarta.transaction.Transactional;
+import com.huumod.ecommerce.product.repository.PhoneRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,103 +17,137 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InventoryPhoneService {
 
-    InventoryPhoneMapper inventoryPhoneMapper;
-    InventoryPhoneRepository inventoryPhoneRepository;
-    InventoryPhoneOptionRepository inventoryPhoneOptionRepository;
-
-    static int MAX_QUANTITY = 99;
+    InventoryPhoneRepository repository;
+    InventoryPhoneMapper mapper;
+    PhoneRepository phoneRepository;
 
     @Transactional
-    public InventoryPhoneResponse createInventory(String phoneOptionId, InventoryPhoneRequest request) {
-        if (inventoryPhoneRepository.existsByProductId(request.getProductId()))
+    public InventoryPhoneResponse create(InventoryPhoneRequest request) {
+
+        if (!phoneRepository.existsById(request.getProductId()))
+            throw new AppException(ErrorCode.PHONE_NOT_FOUND);
+
+        if (repository.existsByProductId(request.getProductId()))
             throw new AppException(ErrorCode.INVENTORY_EXSITED);
 
-        var inventory = inventoryPhoneMapper.toInventoryPhone(request);
+        var inventory = InventoryPhone.builder()
+                .productId(request.getProductId())
+                .quantity(0)
+                .reservedQuantity(0)
+                .lowStockThreshold(request.getLowStockThreshold() == null
+                        ? 5
+                        : request.getLowStockThreshold()
+                ).status(InventoryStatus.ACTIVE)
+                .build();
 
-        Set<InventoryPhoneOption> optionSet = new HashSet<>();
-        optionSet.add(inventoryPhoneOptionRepository.findById(phoneOptionId).orElse(null));
-        inventory.setOption(optionSet);
-
-        var phoneOption = inventoryPhoneOptionRepository.findById(phoneOptionId).orElseThrow(
-                () -> new AppException(ErrorCode.PHONE_NOT_FOUND)
-        );
-        Integer totalQuantity = 0;
-        totalQuantity += phoneOption.getQuantity();
-
-        inventory.setTotalQuantity(totalQuantity);
-        inventory.setCreatedAt(Instant.now());
-        inventory.setUpdatedAt(Instant.now());
-        inventory = inventoryPhoneRepository.save(inventory);
-
-        return inventoryPhoneMapper.toInventoryPhoneResponse(inventory);
+        return mapper.toResponse(repository.save(inventory));
     }
 
-    public PageResponse<InventoryPhoneResponse> getALl(int page, int size) {
+    @Transactional(readOnly = true)
+    public InventoryPhoneResponse getById(String id) {
 
-        Sort sort = Sort.by("updatedAt").descending();
-        Pageable pageable = PageRequest.of(page-1, size, sort);
-        var pageData = inventoryPhoneRepository.findAll(pageable);
+        var inventory = repository.findById(id).orElseThrow(
+                () -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
+
+        return mapper.toResponse(inventory);
+    }
+
+    @Transactional(readOnly = true)
+    public InventoryPhoneResponse getByProductId(String productId) {
+
+        var inventory = repository.findByProductId(productId).orElseThrow(
+                () -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
+
+        return mapper.toResponse(inventory);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<InventoryPhoneResponse> getAll(int page, int size, InventoryStatus status) {
+
+        if (page < 1 || size < 1 || size > 100)
+            throw new IllegalArgumentException("Invalid pagination parameters");
+
+        var pageable = PageRequest.of(page - 1, size, Sort.by("updatedAt").descending());
+
+        var pageData = status == null
+                ? repository.findAll(pageable)
+                : repository.findAllByStatus(status, pageable);
 
         return PageResponse.<InventoryPhoneResponse>builder()
                 .currentPage(page)
                 .pageSize(pageData.getSize())
                 .totalPages(pageData.getTotalPages())
                 .totalElements(pageData.getTotalElements())
-                .data(pageData.stream()
-                        .map(inventoryPhoneMapper::toInventoryPhoneResponse)
-                        .toList()
-                )
+                .data(pageData.getContent().stream()
+                        .map(mapper::toResponse)
+                        .toList())
                 .build();
     }
 
     @Transactional
-    public InventoryPhoneResponse increaseQuantity(String productId) {
-        int updated = inventoryPhoneRepository.increaseIfNotMax(productId, MAX_QUANTITY);
+    public InventoryPhoneResponse stockIn(String productId, StockInRequest request) {
 
-        if (updated == 0) {
-            if (!inventoryPhoneRepository.existsByProductId(productId))
-                throw new AppException(ErrorCode.INVENTORY_NOT_FOUND);
-            throw new AppException(ErrorCode.INVENTORY_MAX_SIZE);
-        }
+        var inventory = repository.findByProductIdForUpdate(productId).orElseThrow(
+                () -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
 
-        var data = inventoryPhoneRepository.findByProductId(productId)
-                .orElseThrow(() -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
+        if (inventory.getStatus() != InventoryStatus.ACTIVE)
+            throw new IllegalStateException("Inventory is inactive");
 
-        return inventoryPhoneMapper.toInventoryPhoneResponse(data);
+        inventory.setQuantity(Math.addExact(inventory.getQuantity(), request.getQuantity()));
+
+        return mapper.toResponse(repository.save(inventory));
     }
 
     @Transactional
-    public InventoryPhoneResponse reduceQuantity(String productId) {
-        int updated = inventoryPhoneRepository.decreaseIfAvailable(productId);
+    public InventoryPhoneResponse adjust(String productId, StockAdjustmentRequest request) {
 
-        if (updated == 0) {
-            if (!inventoryPhoneRepository.existsByProductId(productId))
-                throw new AppException(ErrorCode.INVENTORY_NOT_FOUND);
-            throw new AppException(ErrorCode.PRODUCT_OUT_STOCK);
-        }
+        var inventory = repository.findByProductIdForUpdate(productId).orElseThrow(
+                () -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
 
-        var data = inventoryPhoneRepository.findByProductId(productId)
-                .orElseThrow(() -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
+        if (request.getActualQuantity() < inventory.getReservedQuantity())
+            throw new IllegalArgumentException("Actual quantity cannot be less than reserved quantity");
 
-        var response = inventoryPhoneMapper.toInventoryPhoneResponse(data);
+        inventory.setQuantity(request.getActualQuantity());
 
-        if (data.getTotalQuantity() == 0)
-            response.setStatus("The product is out of stock.");
-
-        return response;
+        return mapper.toResponse(repository.save(inventory));
     }
 
-    public void removeInventory(String id) {
-        inventoryPhoneRepository.deleteById(id);
+    @Transactional
+    public void deactivate(String productId) {
+
+        var inventory = repository.findByProductIdForUpdate(productId).orElseThrow(
+                () -> new AppException(ErrorCode.INVENTORY_NOT_FOUND));
+
+        if (inventory.getReservedQuantity() > 0)
+            throw new IllegalStateException("Cannot deactivate inventory with active reservations");
+
+        inventory.setStatus(InventoryStatus.INACTIVE);
+
+        repository.save(inventory);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<InventoryPhoneResponse> getLowStock(int page, int size) {
+
+        Sort sort = Sort.by("updatedAt").descending();
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        var pageData = repository.findLowStock(pageable);
+
+        return PageResponse.<InventoryPhoneResponse>builder()
+                .currentPage(page)
+                .pageSize(pageData.getSize())
+                .totalPages(pageData.getTotalPages())
+                .totalElements(pageData.getTotalElements())
+                .data(pageData.getContent().stream()
+                        .map(mapper::toResponse)
+                        .toList())
+                .build();
     }
 }

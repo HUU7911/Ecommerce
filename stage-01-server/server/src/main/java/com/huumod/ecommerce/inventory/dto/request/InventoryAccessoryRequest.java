@@ -1,10 +1,9 @@
 package com.huumod.ecommerce.inventory.dto.request;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.Instant;
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,23 +13,9 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InventoryAccessoryRequest {
 
-    String id;
+    @NotBlank
+    String productId;
 
-    String  productId;
-
-    String name;
-
-    Integer quantity;
-
-    String status;
-
-    List<String> images;
-
-    String type;
-
-    String price;
-
-    Instant createdAt;
-
-    Instant updatedAt;
+    @Min(0)
+    Integer lowStockThreshold = 5;
 }

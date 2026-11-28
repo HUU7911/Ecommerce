@@ -2,7 +2,8 @@ package com.huumod.ecommerce.inventory.controller;
 
 import com.huumod.ecommerce.contract.ApiResponse;
 import com.huumod.ecommerce.contract.PageResponse;
-import com.huumod.ecommerce.inventory.dto.request.InventoryPhoneRequest;
+import com.huumod.ecommerce.contract.constant.InventoryStatus;
+import com.huumod.ecommerce.inventory.dto.request.*;
 import com.huumod.ecommerce.inventory.dto.response.InventoryPhoneResponse;
 import com.huumod.ecommerce.inventory.service.InventoryPhoneService;
 import jakarta.validation.Valid;
@@ -13,55 +14,92 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/inventories")
+@RequestMapping("/inventories/phones")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InventoryPhoneController {
 
-    InventoryPhoneService inventoryPhoneService;
+    InventoryPhoneService service;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<InventoryPhoneResponse> createInventory(
-            @PathVariable("optionId") String optionId,
-            @RequestBody @Valid InventoryPhoneRequest request) {
+    public ApiResponse<InventoryPhoneResponse> create(
+            @Valid @RequestBody InventoryPhoneRequest request) {
+
         return ApiResponse.<InventoryPhoneResponse>builder()
-                .message("Inventory created successfully")
-                .results(inventoryPhoneService.createInventory(optionId, request))
+                .message("Phone inventory created successfully")
+                .results(service.create(request))
                 .build();
     }
 
     @GetMapping
     public ApiResponse<PageResponse<InventoryPhoneResponse>> getAll(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) InventoryStatus status) {
+
         return ApiResponse.<PageResponse<InventoryPhoneResponse>>builder()
-                .message("Get inventories successfully")
-                .results(inventoryPhoneService.getALl(page, size))
+                .message("Get phone inventories successfully")
+                .results(service.getAll(page, size, status))
                 .build();
     }
 
-    @PatchMapping("/products/{productId}/increase")
-    public ApiResponse<InventoryPhoneResponse> increaseQuantity(@PathVariable String productId) {
+    @GetMapping("/{id}")
+    public ApiResponse<InventoryPhoneResponse> getById(@PathVariable String id) {
+
         return ApiResponse.<InventoryPhoneResponse>builder()
-                .message("Increase quantity successfully")
-                .results(inventoryPhoneService.increaseQuantity(productId))
+                .message("Get phone inventory successfully")
+                .results(service.getById(id))
                 .build();
     }
 
-    @PatchMapping("/products/{productId}/reduce")
-    public ApiResponse<InventoryPhoneResponse> reduceQuantity(@PathVariable String productId) {
+    @GetMapping("/products/{productId}")
+    public ApiResponse<InventoryPhoneResponse> getByProductId(@PathVariable String productId) {
+
         return ApiResponse.<InventoryPhoneResponse>builder()
-                .message("Reduce quantity successfully")
-                .results(inventoryPhoneService.reduceQuantity(productId))
+                .message("Get phone inventory successfully")
+                .results(service.getByProductId(productId))
                 .build();
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> removeInventory(@PathVariable String id) {
-        inventoryPhoneService.removeInventory(id);
+    @PostMapping("/products/{productId}/stock-in")
+    public ApiResponse<InventoryPhoneResponse> stockIn(
+            @PathVariable String productId,
+            @Valid @RequestBody StockInRequest request
+    ) {
+        return ApiResponse.<InventoryPhoneResponse>builder()
+                .message("Phone stock imported successfully")
+                .results(service.stockIn(productId, request))
+                .build();
+    }
+
+    @PatchMapping("/products/{productId}/adjust")
+    public ApiResponse<InventoryPhoneResponse> adjust(
+            @PathVariable String productId,
+            @Valid @RequestBody StockAdjustmentRequest request
+    ) {
+        return ApiResponse.<InventoryPhoneResponse>builder()
+                .message("Phone inventory adjusted successfully")
+                .results(service.adjust(productId, request))
+                .build();
+    }
+
+    @PatchMapping("/products/{productId}/deactivate")
+    public ApiResponse<Void> deactivate(@PathVariable String productId) {
+        service.deactivate(productId);
         return ApiResponse.<Void>builder()
-                .message("Inventory removed successfully")
+                .message("Phone inventory deactivated successfully")
+                .build();
+    }
+
+    @GetMapping("/low-stock")
+    public ApiResponse<PageResponse<InventoryPhoneResponse>> getLowStock(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ApiResponse.<PageResponse<InventoryPhoneResponse>>builder()
+                .message("Get low stock phone inventories successfully")
+                .results(service.getLowStock(page, size))
                 .build();
     }
 }
